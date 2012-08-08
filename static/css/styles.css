@@ -1,0 +1,5 @@
+
+label { display: block; }
+#controls { border: solid green 1px;}
+#search-classic { border: solid black 1px; }
+#search-solr { border: solid blue 1px; }

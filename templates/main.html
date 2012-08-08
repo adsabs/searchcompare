@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+	<title>Classic vs Solr Search Results Comparison</title>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/sijax/sijax.js') }}"></script>
+	<script type="text/javascript">
+    {{ g.sijax.get_js()|safe }}
+	</script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/searchcompare.js') }}"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/Toast/toast.css') }}"/> 
+</head>
+<body>
+
+<div class="wrap">
+  <div class="grids">
+    <div id="controls" class="grid-12">
+    
+        <div class="grid-half">
+            <label for="input-solr">Classic:</label>
+            <input type="text" name="input-classic" id="input-classic"/>
+        </div>
+        <div class="grid-6">
+            <label for="input-solr">Solr:</label>
+            <input type="text" name="input-solr" id="input-solr"/>
+            <input type="button" id="search-button" value="search"/>
+        </div>
+        
+    </div>
+    <div id="meta-classic" class="grid-half">
+    </div>
+    <div id="meta-solr" class="grid-6">
+    </div>
+    <div id="results-classic" class="grid-half search-results">
+    </div>
+    <div id="results-solr" class="grid-6 search-results">
+    </div>
+  </div>
+</div>
+</bodY>
+</html>
