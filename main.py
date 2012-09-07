@@ -3,7 +3,7 @@ import os
 from flask import Flask, g, render_template
 from flaskext.htmlbuilder import html, render
 from urllib import urlencode
-from urllib2 import urlopen
+from urllib2 import urlopen, quote
 from lxml.etree import fromstring
 import flask_sijax
 import config
@@ -25,8 +25,11 @@ def results2html(results):
         ])
     
 def classic_search(q):
-    params = urlencode({'text': q, 'data_type': 'XML'})
-    search_url = "http://adsabs.harvard.edu/cgi-bin/nph-abs_connect?" + params
+    params = [('q', q), ('data_type', 'XML'), ('qtype', 'NEW'), ('db_key', 'AST'), 
+              ('db_key', 'PRE'), ('arxiv_sel', 'astro-ph'), ('arxiv_sel', 'gr-qc')]
+    params = '&'.join(["%s=%s" % (k, quote(v)) for k,v in params])
+    search_url = "http://adsabs.harvard.edu/cgi-bin/topicSearch?" + params
+    app.logger.debug("classic search: %s" % search_url)
     u = urlopen(search_url)
     root = fromstring(u.read())
     ns = {'ads': 'http://ads.harvard.edu/schema/abs/1.1/abstracts'}
@@ -40,11 +43,16 @@ def classic_search(q):
     return (results2html(results), root.attrib.get('selected'))
     
 def solr_search(q):
-    params = urlencode({'q': q, 'wt': 'python', 'rows': 200, 'fl': "bibcode,title,score"})
+    params = urlencode({'q': q, 'wt': 'python', 'rows': 200, 'fl': "bibcode,title,score,pubdate_sort",
+                        'sort': 'pubdate_sort desc'})
     search_url = "http://adsate:8987/solr/collection1/select?" + params
+    app.logger.debug("solr search: %s" % search_url)
     u = urlopen(search_url)
     resp = eval(u.read())
-    return (results2html(resp['response']['docs']), resp['response']['numFound'])
+    # remove records with bad pubdates
+    app.logger.debug(str(resp['response']['docs'][0]))
+    results = filter(lambda x: int(x['pubdate_sort']) < 20140000, resp['response']['docs'])
+    return (results2html(results), resp['response']['numFound'])
 
 class SearchHandler(object):
     
@@ -59,7 +67,6 @@ class SearchHandler(object):
         results_html,total_hits = solr_search(q)
         obj_resp.html('#results-solr', results_html)
         obj_resp.script("$('#meta-solr').text('Total Hits: %s')" % total_hits)
-#        obj_resp.alert('solr search: %s' % q)
         
 @flask_sijax.route(app, '/')
 def main(name=None):

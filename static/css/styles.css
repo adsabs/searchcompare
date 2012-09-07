@@ -1,5 +1,6 @@
 
-label { display: block; }
-#controls { border: solid green 1px;}
-#search-classic { border: solid black 1px; }
-#search-solr { border: solid blue 1px; }
+div.header { font-size: 90%; text-align: center; }
+#controls { background-color: green; color: white; padding: 10px; }
+div.meta { }
+#results-classic { background-color: #EEE; }
+#results-solr { background-color: #EEE; }
