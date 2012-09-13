@@ -3,6 +3,7 @@
 <head>
 	<title>searchcompare: comparing ADS Classic vs Solr search results</title>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.ba-bbq.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/sijax/sijax.js') }}"></script>
 	<script type="text/javascript">
     {{ g.sijax.get_js()|safe }}
@@ -32,13 +33,15 @@
             <input type="button" id="search-button" value="search"/>
         </div>
     </div>
-    <div id="meta" class="grid-12">
+    <div id="meta-classic" class="grid-6 resultsMeta">
     </div>
-    <div class="grid-half search-results">
+    <div id="meta-solr" class="grid-6 resultsMeta">
+    </div>
+    <div class="grid-half searchResults">
         <div class="resultsSpinner">Working...</div>
         <ol id="results-classic" class="resultsList"></ol>
     </div>
-    <div class="grid-6 search-results">
+    <div class="grid-6 searchResults">
         <div class="resultsSpinner">Working...</div>
         <ol id="results-solr" class="resultsList"></ol>
     </div>

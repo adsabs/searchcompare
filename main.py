@@ -1,7 +1,6 @@
 
 import os
 from flask import Flask, g, render_template
-from flaskext.htmlbuilder import html, render
 from urllib import urlencode
 from urllib2 import urlopen, quote
 from lxml.etree import fromstring
@@ -22,8 +21,11 @@ class SearchResults(object):
         self.results = None
         self.total_hits = None
         
-    def results2html(self):
-        return render_template('result-list.html', results=self.results)
+    def results_html(self):
+        return render_template('results-list.html', results=self.results)
+
+    def meta_html(self):
+        return render_template('results-meta.html', results_obj=self)
     
 def classic_search(q):
     
@@ -43,7 +45,7 @@ def classic_search(q):
     sr = SearchResults()
     sr.url = search_url
     sr.results = results
-    sr.total_hist = root.attrib.get('selected')
+    sr.total_hits = root.attrib.get('selected')
     return sr
     
 def solr_search(q):
@@ -59,7 +61,7 @@ def solr_search(q):
     sr = SearchResults()
     sr.url = search_url
     sr.results = results
-    sr.total_hist = resp['response']['numFound']
+    sr.total_hits = resp['response']['numFound']
     return sr
 
 class SearchHandler(object):
@@ -67,14 +69,14 @@ class SearchHandler(object):
     @staticmethod
     def search_classic(obj_resp, q):
         results = classic_search(q)
-        obj_resp.html('#results-classic', results.results2html())
-        obj_resp.script("$('#meta-classic').text('Total Hits: %s')" % results.total_hits)
+        obj_resp.html('#results-classic', results.results_html())
+        obj_resp.html('#meta-classic', results.meta_html())
         
     @staticmethod
     def search_solr(obj_resp, q):
         results = solr_search(q)
-        obj_resp.html('#results-solr', results.results2html())
-        obj_resp.script("$('#meta-solr').text('Total Hits: %s')" % results.total_hits)
+        obj_resp.html('#results-solr', results.results_html())
+        obj_resp.html('#meta-solr', results.meta_html())
         
 @flask_sijax.route(app, '/')
 def main(name=None):
