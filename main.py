@@ -16,19 +16,19 @@ app.config['SIJAX_STATIC_PATH'] = sijax_path
 app.config['SIJAX_JSON_URI'] = '/static/js/sijax/json2.js'
 flask_sijax.Sijax(app)
 
-def results2html(results):
-    return render([
-            html.div(id=result['bibcode'])(
-                html.p(html.strong("%s (%s)" % (result['bibcode'], result['score']))),
-                html.p(result['title'])
-            ) for result in results
-        ])
+class SearchResults(object):
+    def __init__(self):
+        self.url = None
+        self.results = None
+        self.total_hits = None
+        
+    def results2html(self):
+        return render_template('result-list.html', results=self.results)
     
 def classic_search(q):
-    params = [('q', q), ('data_type', 'XML'), ('qtype', 'NEW'), ('db_key', 'AST'), 
-              ('db_key', 'PRE'), ('arxiv_sel', 'astro-ph'), ('arxiv_sel', 'gr-qc')]
-    params = '&'.join(["%s=%s" % (k, quote(v)) for k,v in params])
-    search_url = "http://adsabs.harvard.edu/cgi-bin/topicSearch?" + params
+    
+    search_url = "http://adsabs.harvard.edu/cgi-bin/topicSearch?" \
+                + ("q=%s&qtype=NEW&db_key=AST&db_key=PRE&arxiv_sel=astro-ph&arxiv_sel=gr-qc&data_type=XML" % quote(q))
     app.logger.debug("classic search: %s" % search_url)
     u = urlopen(search_url)
     root = fromstring(u.read())
@@ -40,11 +40,15 @@ def classic_search(q):
             'title': rec.find('ads:title', ns).text,
             'score': rec.find('ads:score', ns).text
             })
-    return (results2html(results), root.attrib.get('selected'))
+    sr = SearchResults()
+    sr.url = search_url
+    sr.results = results
+    sr.total_hist = root.attrib.get('selected')
+    return sr
     
 def solr_search(q):
     params = urlencode({'q': q, 'wt': 'python', 'rows': 200, 'fl': "bibcode,title,score,pubdate_sort",
-                        'sort': 'pubdate_sort desc'})
+                        'fq': 'database:ASTRONOMY', 'sort': 'pubdate_sort desc'})
     search_url = "http://adsate:8987/solr/collection1/select?" + params
     app.logger.debug("solr search: %s" % search_url)
     u = urlopen(search_url)
@@ -52,21 +56,25 @@ def solr_search(q):
     # remove records with bad pubdates
     app.logger.debug(str(resp['response']['docs'][0]))
     results = filter(lambda x: int(x['pubdate_sort']) < 20140000, resp['response']['docs'])
-    return (results2html(results), resp['response']['numFound'])
+    sr = SearchResults()
+    sr.url = search_url
+    sr.results = results
+    sr.total_hist = resp['response']['numFound']
+    return sr
 
 class SearchHandler(object):
     
     @staticmethod
     def search_classic(obj_resp, q):
-        results_html,total_hits = classic_search(q)
-        obj_resp.html('#results-classic', results_html)
-        obj_resp.script("$('#meta-classic').text('Total Hits: %s')" % total_hits)
+        results = classic_search(q)
+        obj_resp.html('#results-classic', results.results2html())
+        obj_resp.script("$('#meta-classic').text('Total Hits: %s')" % results.total_hits)
         
     @staticmethod
     def search_solr(obj_resp, q):
-        results_html,total_hits = solr_search(q)
-        obj_resp.html('#results-solr', results_html)
-        obj_resp.script("$('#meta-solr').text('Total Hits: %s')" % total_hits)
+        results = solr_search(q)
+        obj_resp.html('#results-solr', results.results2html())
+        obj_resp.script("$('#meta-solr').text('Total Hits: %s')" % results.total_hits)
         
 @flask_sijax.route(app, '/')
 def main(name=None):
