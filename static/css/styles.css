@@ -5,5 +5,5 @@ ol.resultsList { background-color: #eee; }
 ol.resultsList div.bibcode { font-weight: bold; margin-top: 5px; }
 div.resultsSpinner { display: none; }
 div.searchResults { margin-top: 10px; }
-div.resultsMeta { margin-top: 10px; }
+div.resultsMeta { padding-top: 10px; }
 div.resultsMeta label { font-weight: bold; }

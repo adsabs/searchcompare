@@ -20,10 +20,11 @@ jQuery.ajaxSetup({
 // jquery-bbq stuff...
 $(window).bind( 'hashchange', function(e) {
     var hashQuery = jQuery.deparam.fragment();
-    console.log(hashQuery.classic);
-    $("#input-classic").val(hashQuery.classic);
-    $("#input-solr").val(hashQuery.solr);
-    $("#search-button").click();
+    if (hashQuery.classic || hashQuery.solr) {
+        $("#input-classic").val(hashQuery.classic);
+        $("#input-solr").val(hashQuery.solr);
+        $("#search-button").click();
+    }
 });
  
 $(document).ready(function() {
