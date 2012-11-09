@@ -3,14 +3,10 @@
 <head>
 	<title>searchcompare: comparing ADS Classic vs Solr search results</title>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.ba-bbq.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/sijax/sijax.js') }}"></script>
-	<script type="text/javascript">
-    {{ g.sijax.get_js()|safe }}
-	</script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/searchcompare.js') }}"></script>
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/Toast/toast.css') }}"/> 
+	<script type="text/javascript" src="{{ url_for('searchcompare.static', filename='js/jquery.ba-bbq.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('searchcompare.static', filename='js/searchcompare.js') }}"></script>
+	<link rel="stylesheet" href="{{ url_for('searchcompare.static', filename='css/styles.css') }}">
+	<link rel="stylesheet" href="{{ url_for('searchcompare.static', filename='css/Toast/toast.css') }}"/> 
 </head>
 <body>
 

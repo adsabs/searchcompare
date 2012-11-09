@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block titlehead %}searchcompare: comparing ADS Classic vs Solr search results{% endblock %}
+
+{% block head%}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.ba-bbq.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/searchcompare.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<div class="wrap">
+  <div class="row-fluid">
+    <div class="span12">
+        searchcompare
+	   <div id="controls" class="row">
+	       <div class="span5">
+	           <label for="input-solr">Classic:</label>
+	           <input type="text" name="input-classic" id="input-classic"/>
+	       </div>
+	       <div class="span5">
+	           <label for="input-solr">Solr:</label>
+	           <input type="text" name="input-solr" id="input-solr"/>
+	       </div>
+	       <div class="span2">
+	           <input type="button" id="search-button" value="search"/>
+	       </div>
+	   </div>
+    </div>
+   </div>
+    <!--
+   <div class="row">
+    <div id="meta-classic" class="span6 resultsMeta">
+    </div>
+    <div id="meta-solr" class="span6 resultsMeta">
+    </div>
+   </div>
+   <div class="span6 searchResults">
+       <div class="resultsSpinner">Working...</div>
+       <ol id="results-classic" class="resultsList"></ol>
+   </div>
+   <div class="span6 searchResults">
+       <div class="resultsSpinner">Working...</div>
+       <ol id="results-solr" class="resultsList"></ol>
+   </div>
+   -->
+</div>
+</bodY>
+</html>
+
+{% endblock %}

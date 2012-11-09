@@ -34,8 +34,7 @@ $(document).ready(function() {
 		var classicQuery = $("#input-classic").val();
 		var solrQuery = $("#input-solr").val();
 		location.href = jQuery.param.fragment( location.href, {classic: classicQuery, solr: solrQuery});
-		Sijax.request('search_classic', [$("#input-classic").val()]);
-		Sijax.request('search_solr', [$("#input-solr").val()]);
+		$.ajax();
 	})
 	$(window).trigger( 'hashchange' );
 });
